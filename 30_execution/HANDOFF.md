@@ -1,20 +1,21 @@
 # HANDOFF.md
 
-## Task: TASK-001
+## What changed
 
-**Executed by:** agent2
-**Timestamp:** 2026-03-30T00:08+08:00
+- Created `30_execution/hello.txt` with the exact content: `Hello from Agent 2`
 
-### What Changed
+## Context
 
-- Created `30_execution/hello.txt` with exact content: `Hello from Agent 2`
+- Task: TASK-001 (smoke test)
+- Source requirement: `00_input/requirement.md`
+- Architecture reference: `10_architecture/project-brief.md`
 
-### What to Review
+## Review notes
 
-- Verify `30_execution/hello.txt` exists
-- Verify its content is exactly `Hello from Agent 2`
-- Confirm no other files were modified outside `30_execution/`
+- Verify `hello.txt` contains exactly `Hello from Agent 2` (no trailing newline beyond standard).
+- Verify no files outside `30_execution/` were modified.
+- If approved, Agent 3 should delete `20_tasks/TASK-001/`.
 
-### Scope
+## Status
 
-Minimal smoke-test task. No other files touched.
+Complete — ready for Agent 3 review.
