@@ -1,0 +1,29 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "C:/Users/your-user/.openclaw/workspace-agent1",
+      "model": {
+        "primary": "REPLACE_WITH_YOUR_MODEL"
+      },
+      "heartbeat": {
+        "every": "5m",
+        "target": "feishu",
+        "directPolicy": "allow",
+        "lightContext": true,
+        "isolatedSession": true,
+        "prompt": "Read AGENTS.md and HEARTBEAT.md from the workspace root. Detect role from the workspace path or .agent-role.local. Follow the role strictly. If nothing needs action, reply HEARTBEAT_OK.",
+        "ackMaxChars": 300
+      }
+    }
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "appId": "YOUR_APP_ID",
+      "appSecret": "YOUR_APP_SECRET"
+    }
+  },
+  "gateway": {
+    "mode": "local"
+  }
+}

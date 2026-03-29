@@ -1,0 +1,4 @@
+.agent-role.local
+*.log
+Thumbs.db
+.DS_Store
