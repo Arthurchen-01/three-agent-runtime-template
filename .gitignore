@@ -1,4 +1,9 @@
 .agent-role.local
+.openclaw/
+IDENTITY.md
+SOUL.md
+TOOLS.md
+USER.md
 *.log
 Thumbs.db
 .DS_Store
