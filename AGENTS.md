@@ -24,15 +24,26 @@ Use this order:
 - Always `git pull --rebase` before starting a work cycle.
 - After meaningful changes, commit and push with a role-specific message.
 - If you see unrelated local changes, do not overwrite them.
+- Use subagents internally when helpful, but always write the externally visible state back to the repository.
+- Keep main-thread token usage low by storing progress, findings, and plans in files instead of repeating long context in chat.
 
 ## Role: agent1
+
+Department:
+
+- Command center, planning, decomposition, and dispatch
 
 Responsibilities:
 
 - Read `00_input/`
+- Convert incoming work into structured plans
+- Use internal subagents to analyze scope and produce decomposition
 - Write or update `10_architecture/`
-- Create task folders under `20_tasks/`
-- Read `40_review/`
+- Create or update task folders under `20_tasks/`
+- For each task, write both an execution checklist and a test plan
+- Read incoming execution reports from `30_execution/`
+- Read review and audit reports from `40_review/`
+- Based on new reports, issue the next smallest useful instruction to Agent 2
 - If the user gives a direct requirement in chat, record it into `00_input/`
 
 Allowed write scope:
@@ -44,20 +55,38 @@ Allowed write scope:
 
 Forbidden:
 
-- Do not write final execution artifacts into `30_execution/`
-- Do not write review reports into `40_review/`
+- Do not write final execution artifacts into `30_execution/` except coordination summaries requested by the workflow
+- Do not write review verdicts into `40_review/`
 - Do not delete tasks after approval
 
+Working style:
+
+- Think in milestones, then dispatch micro-tasks
+- Never send a large fuzzy task to Agent 2 when it can be split into smaller independently checkable steps
+- Every task should answer three questions:
+  - what to do
+  - how to verify it
+  - what report must come back
+- Maintain Agent 1 memory in short-term, mid-term, and long-term layers
+
 ## Role: agent2
+
+Department:
+
+- Delivery, implementation, and self-checking
 
 Responsibilities:
 
 - Read `00_input/`
 - Read `10_architecture/`
 - Read active tasks in `20_tasks/`
-- Execute the current approved task
+- Execute only the smallest currently dispatched task
+- Use internal subagents as needed for coding, checking, or local verification
+- Work in small batches and push multiple times if needed
 - Write outputs to `30_execution/`
 - Write `30_execution/HANDOFF.md`
+- Write a structured `30_execution/STATUS-REPORT.md`
+- Return focused status reports to Agent 1 so Agent 1 can issue the next instruction
 
 Allowed write scope:
 
@@ -70,7 +99,21 @@ Forbidden:
 - Do not delete task folders
 - Do not write review reports
 
+Working style:
+
+- Prefer one small finished unit over one large unfinished unit
+- After each micro-step, document:
+  - what changed
+  - what passed
+  - what is blocked
+  - what Agent 1 should dispatch next
+- Maintain Agent 2 memory in short-term, mid-term, and long-term layers
+
 ## Role: agent3
+
+Department:
+
+- Quality, audit, integration risk, and memory hygiene
 
 Responsibilities:
 
@@ -78,8 +121,11 @@ Responsibilities:
 - Read `10_architecture/`
 - Read `20_tasks/`
 - Read `30_execution/`
+- Review the current batch or milestone, not just the final result
 - Write review reports into `40_review/`
-- If review passes, delete the corresponding task folder in `20_tasks/`
+- If a task or milestone passes, note what can proceed next
+- If the relevant task folder is fully approved, delete the corresponding task folder in `20_tasks/`
+- Maintain memory hygiene by compressing useful lessons into mid-term and long-term memory files
 
 Allowed write scope:
 
@@ -92,3 +138,9 @@ Forbidden:
 - Do not modify execution artifacts in `30_execution/`
 - Do not rewrite user requirements except quoting them in review
 - Do not rewrite architecture
+
+Working style:
+
+- Act as an independent checker, not as a second executor
+- Review in a way that helps Agent 1 decide the next smallest instruction
+- Maintain Agent 3 memory in short-term, mid-term, and long-term layers
